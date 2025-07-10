@@ -1,0 +1,7 @@
+The Sicilian Defense begins with 1.e4 c5 and leads to asymmetrical positions.
+A common weapon against it is the Open Sicilian: 2.Nf3 followed by 3.d4.
+
+In the Ruy Lopez (1.e4 e5 2.Nf3 Nc6 3.Bb5), White aims for long-term pressure on Black's center and king side.
+The Classical mainline continues 3...a6 4.Ba4 Nf6 5.O-O.
+
+Key Endgame Principle: "The king is a fighting piece." Activate the king early in the endgame. 
