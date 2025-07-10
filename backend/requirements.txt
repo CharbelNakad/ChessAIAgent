@@ -9,3 +9,4 @@ python-chess==1.999
 aiohttp==3.9.1
 langchain-community
 langchain-openai 
+langsmith>=0.0.72 
