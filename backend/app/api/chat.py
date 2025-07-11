@@ -10,6 +10,7 @@ agent = ChessAgent()
 class ChatRequest(BaseModel):
     message: str
     history: list[str] | None = []
+    fen: str | None = None
 
 
 class ChatResponse(BaseModel):
@@ -19,5 +20,5 @@ class ChatResponse(BaseModel):
 @router.post("/", response_model=ChatResponse)
 async def chat_endpoint(req: ChatRequest):
     """Chat with the AI chess coach."""
-    reply = agent.chat(req.message, req.history or [])
+    reply = agent.chat(req.message, req.history or [], req.fen)
     return {"reply": reply} 

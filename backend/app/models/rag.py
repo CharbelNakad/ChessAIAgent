@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Optional
 from pathlib import Path
 
 from langchain.chains import RetrievalQA
@@ -27,6 +27,11 @@ class ChessRAG:
             retriever=self.vector_store.as_retriever(),
         )
 
-    def generate_response(self, query: str, history: List[str]) -> str:
-        """Generate an answer grounded in retrieved chess documents."""
-        return self.qa_chain.run(query) 
+    def generate_response(self, query: str, history: List[str], fen: Optional[str] = None) -> str:
+        """Generate an answer grounded in retrieved chess documents, optionally aware of FEN."""
+        # LangChain tracing handled via env vars (LangSmith)
+        prompt = query
+        # If fen provided but not already in query, prepend context
+        if fen and "FEN:" not in query:
+            prompt = f"Current board position (FEN): {fen}.\n\n{query}"
+        return self.qa_chain.run(prompt) 
