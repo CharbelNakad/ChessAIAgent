@@ -3,9 +3,12 @@ import { QueryClient, QueryClientProvider, useMutation, useQuery } from "@tansta
 import axios from "axios";
 
 // --------------------------------------------------
-// Axios instance – points to Next.js proxy (/api → backend)
+// Determine backend URL from env or default to localhost
+const BACKEND_BASE = process.env.NEXT_PUBLIC_API_BASE || "http://localhost:8000";
+
 // --------------------------------------------------
-const api = axios.create({ baseURL: "/api" });
+// Axios instance – direct to backend
+const api = axios.create({ baseURL: BACKEND_BASE });
 
 // --------------------------------------------------
 // React Query client (singleton)
