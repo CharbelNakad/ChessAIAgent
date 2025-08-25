@@ -7,7 +7,7 @@ python-dotenv==1.0.0
 pydantic==2.6.0
 python-chess==1.999
 aiohttp==3.9.1
-langchain-community
-langchain-openai 
-langsmith>=0.0.72 
-langgraph>=0.0.26 
+langchain-community==0.0.19
+langchain-openai==0.0.5
+langchain-core==0.1.23
+langsmith==0.0.87
