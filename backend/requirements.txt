@@ -11,3 +11,4 @@ langsmith==0.0.87
 langchain-core==0.1.23
 langchain-community==0.0.19
 langchain-openai==0.0.5
+
