@@ -78,6 +78,8 @@ export function useChat() {
 const GameContext = createContext<{
   elo: number;
   setElo: (elo: number) => void;
+  effectiveElo: number; // debounced elo used for API calls
+  applyElo: () => void;
   coachEnabled: boolean;
   setCoachEnabled: (v: boolean) => void;
 } | null>(null);
@@ -101,10 +103,16 @@ interface Props {
 export default function GameProvider({ children }: Props) {
   const [elo, setElo] = useState(1600);
   const [coachEnabled, setCoachEnabled] = useState(true);
+  const [effectiveElo, setEffectiveElo] = useState(1600);
+
+  // Explicitly apply the current slider value to become the active ELO
+  function applyElo() {
+    setEffectiveElo(elo);
+  }
 
   return (
     <QueryClientProvider client={queryClient}>
-      <GameContext.Provider value={{ elo, setElo, coachEnabled, setCoachEnabled }}>
+      <GameContext.Provider value={{ elo, setElo, effectiveElo, applyElo, coachEnabled, setCoachEnabled }}>
         {children}
       </GameContext.Provider>
     </QueryClientProvider>

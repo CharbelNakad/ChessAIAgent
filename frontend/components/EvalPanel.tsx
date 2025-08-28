@@ -6,9 +6,9 @@ interface Props {
 }
 
 export default function EvalPanel({ fen }: Props) {
-  const { elo, setElo, coachEnabled, setCoachEnabled } = useGameContext();
+  const { elo, effectiveElo, setElo, applyElo, coachEnabled, setCoachEnabled } = useGameContext();
   const evalQuery = useEvaluate(fen);
-  const recommendQuery = useRecommend(fen, 15, elo);
+  const recommendQuery = useRecommend(fen, 15, effectiveElo);
 
   return (
     <div className="p-4 border rounded-md bg-gray-50 w-full">
@@ -18,6 +18,9 @@ export default function EvalPanel({ fen }: Props) {
       <div className="mb-4">
         <label htmlFor="elo" className="block text-sm font-medium text-gray-700">
           Bot ELO: {elo}
+          {elo !== effectiveElo && (
+            <span className="ml-2 text-xs text-gray-500">(not applied)</span>
+          )}
         </label>
         <input
           id="elo"
@@ -29,6 +32,14 @@ export default function EvalPanel({ fen }: Props) {
           onChange={(e) => setElo(Number(e.target.value))}
           className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
         />
+        {elo !== effectiveElo && (
+          <button
+            onClick={applyElo}
+            className="mt-2 px-3 py-1 rounded bg-blue-600 text-white hover:bg-blue-700"
+          >
+            Apply
+          </button>
+        )}
       </div>
 
       {/* Coach toggle */}
@@ -59,7 +70,7 @@ export default function EvalPanel({ fen }: Props) {
       {recommendQuery.isLoading && <p>Getting recommendation...</p>}
       {recommendQuery.data && (
         <div className="mt-4">
-          <h3 className="font-bold">Recommendation (ELO: {elo})</h3>
+          <h3 className="font-bold">Recommendation (ELO: {effectiveElo})</h3>
           <p>
             <strong>Move:</strong> {recommendQuery.data.move}
           </p>

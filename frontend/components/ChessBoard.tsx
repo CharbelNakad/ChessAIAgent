@@ -19,12 +19,12 @@ interface Props {
 
 export default function ChessBoard({ onMove, fen, setFen }: Props) {
   const game = useRef(new Chess());
-  const { elo } = useGameContext();
+  const { effectiveElo } = useGameContext();
   const [lastMove, setLastMove] = useState<string | null>(null);
   const [orientation, setOrientation] = useState<"white" | "black">("white");
   const gradeQuery = useEvaluate(fen ?? null, 15, null, lastMove);
   const evalPosQuery = useEvaluate(fen);
-  const recommendQuery = useRecommend(fen, 15, elo);
+  const recommendQuery = useRecommend(fen, 15, effectiveElo);
 
   const squareStyles = useMemo(() => {
     if (recommendQuery.data?.move) {
