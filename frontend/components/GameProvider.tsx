@@ -1,4 +1,5 @@
-import { ReactNode } from "react";
+"use client";
+import { ReactNode, createContext, useContext, useState } from "react";
 import { QueryClient, QueryClientProvider, useMutation, useQuery } from "@tanstack/react-query";
 import axios from "axios";
 
@@ -18,30 +19,43 @@ const queryClient = new QueryClient();
 // --------------------------------------------------
 // Hooks
 // --------------------------------------------------
-export function useEvaluate(fen: string | null, depth: number = 15) {
+export function useEvaluate(
+  fen: string | null,
+  depth: number = 15,
+  elo: number | null = null,
+  move: string | null = null,
+) {
   return useQuery({
-    queryKey: ["evaluate", fen, depth],
+    queryKey: ["evaluate", fen, depth, elo, move],
     queryFn: async () => {
       if (!fen) throw new Error("Missing FEN");
-      const { data } = await api.post("/evaluate/", { fen, depth });
+      const { data } = await api.post("/evaluate/", { fen, depth, elo, move });
       return data as {
         score_cp: number | null;
         mate: number | null;
         best_move: string | null;
         pv: string | null;
+        grade: string | null;
+        grade_description: string | null;
+        diff_cp: number | null;
       };
     },
-    enabled: !!fen,
+    enabled: !!fen && (move === null || move !== null),
     staleTime: 5_000,
   });
 }
 
-export function useRecommend(fen: string | null, depth: number = 15) {
+export function useRecommend(
+  fen: string | null,
+  depth: number = 15,
+  elo: number | null = null,
+) {
+  const { coachEnabled } = useGameContext();
   return useQuery({
-    queryKey: ["recommend", fen, depth],
+    queryKey: ["recommend", fen, depth, elo, coachEnabled],
     queryFn: async () => {
       if (!fen) throw new Error("Missing FEN");
-      const { data } = await api.post("/recommend/", { fen, depth });
+      const { data } = await api.post("/recommend/", { fen, depth, elo, explain: coachEnabled });
       return data as { move: string | null; analysis: string };
     },
     enabled: !!fen,
@@ -59,6 +73,25 @@ export function useChat() {
 }
 
 // --------------------------------------------------
+// Context
+// --------------------------------------------------
+const GameContext = createContext<{
+  elo: number;
+  setElo: (elo: number) => void;
+  coachEnabled: boolean;
+  setCoachEnabled: (v: boolean) => void;
+} | null>(null);
+
+// Custom hook to use the game context
+export function useGameContext() {
+  const context = useContext(GameContext);
+  if (!context) {
+    throw new Error("useGameContext must be used within a GameProvider");
+  }
+  return context;
+}
+
+// --------------------------------------------------
 // Provider component
 // --------------------------------------------------
 interface Props {
@@ -66,5 +99,14 @@ interface Props {
 }
 
 export default function GameProvider({ children }: Props) {
-  return <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>;
+  const [elo, setElo] = useState(1600);
+  const [coachEnabled, setCoachEnabled] = useState(true);
+
+  return (
+    <QueryClientProvider client={queryClient}>
+      <GameContext.Provider value={{ elo, setElo, coachEnabled, setCoachEnabled }}>
+        {children}
+      </GameContext.Provider>
+    </QueryClientProvider>
+  );
 } 

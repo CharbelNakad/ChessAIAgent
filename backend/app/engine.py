@@ -33,10 +33,47 @@ class StockfishEngine:
             pass
 
     @functools.lru_cache(maxsize=1024)
-    def evaluate_fen(self, fen: str, depth: int = 15) -> Dict[str, Optional[str]]:
-        """Return centipawn score, mate info, principal variation and best move for given FEN."""
+    def evaluate_fen(
+        self, fen: str, depth: int | None = None, elo: int | None = None
+    ) -> Dict[str, Optional[str]]:
+        """
+        Return centipawn score, mate info, principal variation and best move for given FEN.
+        An ELO rating can be provided to adjust Stockfish's skill level.
+        """
         board = chess.Board(fen)
-        result = self.engine.analyse(board, chess.engine.Limit(depth=depth))
+        options: dict[str, int] = {}
+        limit = chess.engine.Limit()
+
+        # Adjust skill and depth based on ELO
+        if elo is not None:
+            # Clamp ELO between 600 and 3200 for safety
+            clamped_elo = max(600, min(elo, 3200))
+
+            # Map ELO to Stockfish skill level (0-20)
+            # Formula: skill = (elo - 600) / 130  (approximate)
+            skill_level = round((clamped_elo - 600) / 130)
+            options["Skill Level"] = max(0, min(skill_level, 20))
+            if skill_level <= 10:
+                # Introduce additional randomness / inaccuracies for low rated play
+                options["Skill Level MaximumError"] = 200  # centipawns
+                options["Skill Level Probability"] = 20  # % chance to commit error
+
+            # Lower depth for weaker play to simulate less thinking time
+            if depth is None:
+                if clamped_elo < 1200:
+                    limit.depth = 5
+                elif clamped_elo < 1800:
+                    limit.depth = 10
+                else:
+                    limit.depth = 15
+            else:
+                limit.depth = depth
+        elif depth:
+            limit.depth = depth
+        else:
+            limit.depth = 15  # Default depth
+
+        result = self.engine.analyse(board, limit, options=options)
 
         score_cp = None
         mate = None

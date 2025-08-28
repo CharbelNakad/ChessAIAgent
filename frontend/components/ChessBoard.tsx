@@ -1,80 +1,116 @@
 "use client";
-import { useEffect, useMemo, useState } from "react";
-import dynamic from "next/dynamic";
+import { useState, useMemo, useRef } from "react";
 import { Chess } from "chess.js";
-
-// react-chessboard should be loaded dynamically to avoid SSR issues
-const ReactChessboard = dynamic(() => import("react-chessboard").then((mod) => mod.Chessboard), {
-  ssr: false,
-});
+import { useEvaluate, useRecommend, useGameContext } from "./GameProvider";
+import { Chessboard } from "react-chessboard";
+import EvalBar from "./EvalBar";
 
 interface Props {
-  fen?: string | null;
-  bestMoveSan?: string | null; // engine suggestion in SAN
-  onFenChange?: (fen: string) => void;
+  onMove: (fen: string) => void;
+  fen: string;
+  setFen: (fen: string) => void;
 }
 
-export default function ChessBoard({ fen, bestMoveSan, onFenChange }: Props) {
-  const [game, setGame] = useState(() => new Chess(fen ?? undefined));
+export default function ChessBoard({ onMove, fen, setFen }: Props) {
+  const game = useRef(new Chess());
+  const { elo } = useGameContext();
+  const [lastMove, setLastMove] = useState<string | null>(null);
+  const [orientation, setOrientation] = useState<"white" | "black">("white");
+  const gradeQuery = useEvaluate(fen ?? null, 15, null, lastMove);
+  const evalPosQuery = useEvaluate(fen);
+  const recommendQuery = useRecommend(fen, 15, elo);
 
-  // Highlight engine best move (from → to style)
   const squareStyles = useMemo(() => {
-    if (!bestMoveSan) return {};
-    try {
-      const temp = new Chess(game.fen());
-      const move = temp.move(bestMoveSan as any);
-      if (move) {
-        return {
-          [move.from]: { backgroundColor: "rgba(255,215,0,0.4)" },
-          [move.to]: { backgroundColor: "rgba(50,205,50,0.4)" },
-        } as Record<string, any>;
+    if (recommendQuery.data?.move) {
+      try {
+        const temp = new Chess(fen);
+        const moveObj = temp.move(recommendQuery.data.move);
+        if (moveObj) {
+          return {
+            [moveObj.from]: { backgroundColor: "rgba(50,205,50,0.4)" },
+            [moveObj.to]: { backgroundColor: "rgba(50,205,50,0.4)" },
+          } as Record<string, React.CSSProperties>;
+        }
+      } catch (_) {
+        /* ignore */
       }
-    } catch {
-      /* ignore */
     }
     return {};
-  }, [bestMoveSan, game]);
+  }, [recommendQuery.data, fen]);
 
-  function handlePieceDrop({
-    sourceSquare,
-    targetSquare,
-  }: any): boolean {
+  function handleDrop({ sourceSquare, targetSquare }: { sourceSquare: string; targetSquare: string | null }): boolean {
     if (!targetSquare) return false;
-
-    console.log("DROP", sourceSquare, targetSquare);
-    const gameCopy = new Chess(game.fen());
-    const move = gameCopy.move({
-      from: sourceSquare,
-      to: targetSquare,
-      promotion: "q",
-    });
-
-    if (!move) return false; // illegal → snap back
-
-    setGame(gameCopy); // update board state
-    onFenChange?.(gameCopy.fen()); // notify parent
-
-    console.log("MOVE", move?.san);
-    return !!move;
+    const gameCopy = new Chess(game.current.fen());
+    try {
+      const move = gameCopy.move({ from: sourceSquare, to: targetSquare, promotion: "q" });
+      if (!move) return false;
+      game.current.load(gameCopy.fen());
+      setLastMove(move.san);
+      setFen(game.current.fen());
+      onMove(game.current.fen());
+      return true;
+    } catch {
+      return false;
+    }
   }
 
-  // Update board if external FEN changes (e.g., reset)
-  useEffect(() => {
-    if (fen && fen !== game.fen()) {
-      setGame(new Chess(fen));
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [fen]);
+  const boardOptions = {
+    position: fen,
+    boardOrientation: orientation,
+    squareStyles,
+    onPieceDrop: handleDrop,
+    boardStyle: { width: 560, height: 560, border: 'none' },
+  } as const;
 
   return (
-    <ReactChessboard
-      options={{
-        position: game.fen(),
-        boardStyle: { width: "500px", height: "500px" },
-        squareStyles,
-        allowDragging: true,
-        onPieceDrop: handlePieceDrop,
-      }}
-    />
+    <div>
+      <div className="mb-2 flex items-center gap-2">
+        <button
+          onClick={() => setOrientation(orientation === "white" ? "black" : "white")}
+          className="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300"
+        >
+          Flip Board
+        </button>
+        {evalPosQuery.data && (
+          <span className="text-sm font-mono">
+            {evalPosQuery.data.mate !== null
+              ? `Mate in ${evalPosQuery.data.mate}`
+              : ((evalPosQuery.data.score_cp ?? 0) / 100).toFixed(2)}
+          </span>
+        )}
+      </div>
+      <div className="flex">
+        <Chessboard options={boardOptions} />
+        {evalPosQuery.data && <EvalBar scoreCp={evalPosQuery.data.score_cp} mate={evalPosQuery.data.mate} />}
+      </div>
+      {gradeQuery.isLoading && lastMove && <p>Grading move...</p>}
+      {gradeQuery.data && gradeQuery.data.grade && (
+        <div
+          className={
+            {
+              Brilliant: "bg-purple-500",
+              Best: "bg-green-500",
+              Good: "bg-green-400",
+              Inaccuracy: "bg-yellow-400",
+              Mistake: "bg-orange-500",
+              Blunder: "bg-red-600",
+            }[gradeQuery.data.grade] +
+            " mt-2 inline-flex items-center gap-1 px-2 py-1 rounded text-sm font-semibold text-white"
+          }
+        >
+          {
+            {
+              Brilliant: "‼",
+              Best: "!",
+              Good: "⭑",
+              Inaccuracy: "!?",
+              Mistake: "?!",
+              Blunder: "??",
+            }[gradeQuery.data.grade]
+          }
+          <span>{gradeQuery.data.grade}</span>
+        </div>
+      )}
+    </div>
   );
 } 
