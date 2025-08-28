@@ -1,9 +1,15 @@
 "use client";
 import { useState, useMemo, useRef } from "react";
+import dynamic from "next/dynamic";
 import { Chess } from "chess.js";
 import { useEvaluate, useRecommend, useGameContext } from "./GameProvider";
-import { Chessboard } from "react-chessboard";
 import EvalBar from "./EvalBar";
+
+// `react-chessboard` generates dynamic IDs/attributes which can differ between
+// server and client. Load it only on the client to avoid SSR hydration issues.
+const Chessboard = dynamic(async () => (await import("react-chessboard")).Chessboard, {
+  ssr: false,
+});
 
 interface Props {
   onMove: (fen: string) => void;
@@ -31,7 +37,7 @@ export default function ChessBoard({ onMove, fen, setFen }: Props) {
             [moveObj.to]: { backgroundColor: "rgba(50,205,50,0.4)" },
           } as Record<string, React.CSSProperties>;
         }
-      } catch (_) {
+      } catch {
         /* ignore */
       }
     }

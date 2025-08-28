@@ -1,12 +1,19 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ChessBoard from "./ChessBoard";
 import ChatPanel from "./ChatPanel";
 import EvalPanel from "./EvalPanel";
 import { Chess } from "chess.js";
 
 export default function ClientLayout() {
+  const [mounted, setMounted] = useState(false);
   const [fen, setFen] = useState(() => new Chess().fen());
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted) return null;
 
   return (
     <div className="flex flex-row gap-8 w-full max-w-7xl mx-auto">
