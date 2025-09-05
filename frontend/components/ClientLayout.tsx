@@ -16,7 +16,7 @@ export default function ClientLayout() {
   if (!mounted) return null;
 
   return (
-    <div className="flex flex-row gap-8 w-full max-w-7xl mx-auto">
+    <div className="flex flex-row gap-8 w-full max-w-7xl mx-auto bg-surface-1 p-4 rounded-lg border border-surface-3">
       {/* Left Column: Chessboard */}
       <div className="flex-shrink-0 w-[560px]">
         <ChessBoard onMove={setFen} fen={fen} setFen={setFen} />

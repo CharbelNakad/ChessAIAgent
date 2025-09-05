@@ -11,15 +11,15 @@ export default function EvalPanel({ fen }: Props) {
   const recommendQuery = useRecommend(fen, 15, effectiveElo);
 
   return (
-    <div className="p-4 border rounded-md bg-gray-50 w-full">
-      <h2 className="text-lg font-bold mb-2">Analysis</h2>
+    <div className="p-4 border rounded-md bg-surface-2 border-surface-3 w-full">
+      <h2 className="text-lg font-bold mb-2 text-green-light">Analysis</h2>
 
       {/* ELO Slider */}
       <div className="mb-4">
-        <label htmlFor="elo" className="block text-sm font-medium text-gray-700">
+        <label htmlFor="elo" className="block text-sm font-medium text-green-light">
           Bot ELO: {elo}
           {elo !== effectiveElo && (
-            <span className="ml-2 text-xs text-gray-500">(not applied)</span>
+            <span className="ml-2 text-xs text-green-light">(not applied)</span>
           )}
         </label>
         <input
@@ -30,12 +30,12 @@ export default function EvalPanel({ fen }: Props) {
           step="100"
           value={elo}
           onChange={(e) => setElo(Number(e.target.value))}
-          className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
+          className="w-full h-2 bg-surface-3 rounded-lg appearance-none cursor-pointer"
         />
         {elo !== effectiveElo && (
           <button
             onClick={applyElo}
-            className="mt-2 px-3 py-1 rounded bg-blue-600 text-white hover:bg-blue-700"
+            className="mt-2 px-3 py-1 rounded btn-primary"
           >
             Apply
           </button>
@@ -43,7 +43,7 @@ export default function EvalPanel({ fen }: Props) {
       </div>
 
       {/* Coach toggle */}
-      <label className="flex items-center gap-2 mb-4 text-sm">
+      <label className="flex items-center gap-2 mb-4 text-sm text-foreground">
         <input
           type="checkbox"
           checked={coachEnabled}

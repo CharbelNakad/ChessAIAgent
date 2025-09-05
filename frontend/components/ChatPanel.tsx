@@ -39,30 +39,30 @@ export default function ChatPanel({ fen }: Props) {
   }
 
   return (
-    <div className="flex flex-col h-full max-h-[60vh] w-full border rounded-md">
-      <div className="flex-1 overflow-y-auto p-4 space-y-2 bg-white">
+    <div className="flex flex-col h-full max-h-[60vh] w-full border rounded-md border-surface-3 bg-surface-2">
+      <div className="flex-1 overflow-y-auto p-4 space-y-2">
         {messages.map((msg, idx) => (
           <div
             key={idx}
             className={`p-2 rounded-md whitespace-pre-line ${
-              msg.role === "user" ? "bg-blue-100 self-end" : "bg-gray-100"
+              msg.role === "user" ? "bg-green-dark text-green-light self-end" : "bg-surface-3"
             }`}
           >
             {msg.content}
           </div>
         ))}
-        {chatMutation.isPending && <div className="text-gray-500">Assistant typing…</div>}
+        {chatMutation.isPending && <div className="text-green-light">Assistant typing…</div>}
       </div>
-      <form onSubmit={handleSubmit} className="p-2 border-t flex gap-2 bg-gray-50">
+      <form onSubmit={handleSubmit} className="p-2 border-t flex gap-2 bg-surface-3 border-green">
         <textarea
           ref={inputRef}
-          className="flex-1 resize-none border rounded p-2 text-sm"
+          className="flex-1 resize-none border rounded p-2 text-sm bg-surface-2 border-surface-3 text-foreground focus:outline-none focus:ring-2 focus:ring-green"
           rows={2}
           placeholder="Ask the AI coach…"
         />
         <button
           type="submit"
-          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 disabled:opacity-50"
+          className="btn-primary px-4 py-2 rounded disabled:opacity-50"
           disabled={chatMutation.isPending}
         >
           Send
