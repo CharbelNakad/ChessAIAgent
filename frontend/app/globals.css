@@ -1,8 +1,20 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Base palette */
+  --background: #0a0f0a; /* near-black with green tint */
+  --foreground: #e6ffe6; /* light green text */
+
+  /* Theme greens */
+  --green-dark: #0b3d2e;   /* dark green */
+  --green: #146c43;        /* primary green */
+  --green-light: #9fe6a0;  /* light green */
+  --black: #000000;
+
+  /* Surfaces */
+  --surface-1: #0f1712; /* darkest surface */
+  --surface-2: #112019; /* dark surface */
+  --surface-3: #153526; /* mid surface */
 }
 
 @theme inline {
