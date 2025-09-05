@@ -23,9 +23,16 @@ export default function RootLayout() {
   return (
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
-        <GameProvider>
-          <ClientLayout />
-        </GameProvider>
+        <header className="w-full bg-green-dark border-b border-green">
+          <div className="max-w-7xl mx-auto px-4 py-4">
+            <h1 className="text-2xl font-bold tracking-wider text-green-light">MY CHESS COACH</h1>
+          </div>
+        </header>
+        <main className="px-4 py-6">
+          <GameProvider>
+            <ClientLayout />
+          </GameProvider>
+        </main>
       </body>
     </html>
   );
