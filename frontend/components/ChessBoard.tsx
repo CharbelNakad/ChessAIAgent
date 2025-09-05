@@ -73,7 +73,7 @@ export default function ChessBoard({ onMove, fen, setFen }: Props) {
       <div className="mb-2 flex items-center gap-2">
         <button
           onClick={() => setOrientation(orientation === "white" ? "black" : "white")}
-          className="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300"
+          className="px-4 py-2 rounded btn-ghost"
         >
           Flip Board
         </button>
