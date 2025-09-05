@@ -26,8 +26,8 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --background: #060806;
+    --foreground: #e6ffe6;
   }
 }
 
@@ -36,3 +36,29 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+/* Utility theme classes */
+.bg-surface-1 { background-color: var(--surface-1); }
+.bg-surface-2 { background-color: var(--surface-2); }
+.bg-surface-3 { background-color: var(--surface-3); }
+.bg-green { background-color: var(--green); }
+.bg-green-dark { background-color: var(--green-dark); }
+.bg-green-light { background-color: var(--green-light); }
+.text-green-light { color: var(--green-light); }
+.text-foreground { color: var(--foreground); }
+.border-green { border-color: var(--green); }
+.border-surface-3 { border-color: var(--surface-3); }
+.ring-green { outline: 2px solid var(--green); outline-offset: 2px; }
+
+button.btn-primary {
+  background-color: var(--green);
+  color: #fff;
+}
+button.btn-primary:hover { background-color: var(--green-dark); }
+
+button.btn-ghost {
+  background-color: transparent;
+  color: var(--foreground);
+  border: 1px solid var(--surface-3);
+}
+button.btn-ghost:hover { border-color: var(--green); }
