@@ -33,8 +33,8 @@ export default function ChessBoard({ onMove, fen, setFen }: Props) {
         const moveObj = temp.move(recommendQuery.data.move);
         if (moveObj) {
           return {
-            [moveObj.from]: { backgroundColor: "rgba(50,205,50,0.4)" },
-            [moveObj.to]: { backgroundColor: "rgba(50,205,50,0.4)" },
+            [moveObj.from]: { backgroundColor: "rgba(159,230,160,0.35)" },
+            [moveObj.to]: { backgroundColor: "rgba(159,230,160,0.35)" },
           } as Record<string, React.CSSProperties>;
         }
       } catch {
@@ -66,6 +66,12 @@ export default function ChessBoard({ onMove, fen, setFen }: Props) {
     squareStyles,
     onPieceDrop: handleDrop,
     boardStyle: { width: 560, height: 560, border: 'none' },
+    // Theming: green squares
+    customDarkSquareStyle: { backgroundColor: 'var(--green-dark)' },
+    customLightSquareStyle: { backgroundColor: 'var(--green)' },
+    // Some builds use these keys without the "custom" prefix
+    darkSquareStyle: { backgroundColor: 'var(--green-dark)' },
+    lightSquareStyle: { backgroundColor: 'var(--green)' },
   } as const;
 
   return (
