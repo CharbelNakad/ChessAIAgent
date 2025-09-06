@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="MY CHESS COACH icon">
+  <!-- Background circle: dark green -->
+  <circle cx="256" cy="256" r="236" fill="#0b3d2e"/>
+  <!-- Subtle outer ring -->
+  <circle cx="256" cy="256" r="236" fill="none" stroke="#146c43" stroke-width="12"/>
+
+  <!-- Rook silhouette: light green -->
+  <g fill="#9fe6a0">
+    <!-- Base -->
+    <rect x="156" y="360" width="200" height="40" rx="8"/>
+    <!-- Body -->
+    <rect x="196" y="220" width="120" height="150" rx="12"/>
+    <!-- Top bar -->
+    <rect x="176" y="190" width="160" height="30" rx="6"/>
+    <!-- Crenellations -->
+    <rect x="180" y="160" width="40" height="30" rx="4"/>
+    <rect x="236" y="160" width="40" height="30" rx="4"/>
+    <rect x="292" y="160" width="40" height="30" rx="4"/>
+  </g>
+
+  <!-- Center slit detail: black for contrast -->
+  <rect x="248" y="250" width="16" height="80" rx="4" fill="#000000" opacity="0.85"/>
+</svg>
+
+
