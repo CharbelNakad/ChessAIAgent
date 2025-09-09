@@ -1,25 +1,75 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="MY CHESS COACH icon">
-  <!-- Background circle: dark green -->
-  <circle cx="256" cy="256" r="236" fill="#0b3d2e"/>
-  <!-- Subtle outer ring -->
-  <circle cx="256" cy="256" r="236" fill="none" stroke="#146c43" stroke-width="12"/>
+  <defs>
+    <!-- Background radial gradient -->
+    <radialGradient id="bgGrad" cx="50%" cy="45%" r="70%">
+      <stop offset="0%" stop-color="#153526" />
+      <stop offset="60%" stop-color="#0b3d2e" />
+      <stop offset="100%" stop-color="#0a0f0a" />
+    </radialGradient>
 
-  <!-- Rook silhouette: light green -->
-  <g fill="#9fe6a0">
-    <!-- Base -->
-    <rect x="156" y="360" width="200" height="40" rx="8"/>
-    <!-- Body -->
-    <rect x="196" y="220" width="120" height="150" rx="12"/>
-    <!-- Top bar -->
-    <rect x="176" y="190" width="160" height="30" rx="6"/>
-    <!-- Crenellations -->
-    <rect x="180" y="160" width="40" height="30" rx="4"/>
-    <rect x="236" y="160" width="40" height="30" rx="4"/>
-    <rect x="292" y="160" width="40" height="30" rx="4"/>
+    <!-- Accent ring gradient -->
+    <linearGradient id="ringGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#9fe6a0" />
+      <stop offset="60%" stop-color="#3abf7a" />
+      <stop offset="100%" stop-color="#146c43" />
+    </linearGradient>
+
+    <!-- Rook gradient -->
+    <linearGradient id="rookGrad" x1="50%" y1="0%" x2="50%" y2="100%">
+      <stop offset="0%" stop-color="#cbffd0" />
+      <stop offset="100%" stop-color="#9fe6a0" />
+    </linearGradient>
+
+    <!-- Soft drop shadow -->
+    <filter id="softShadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="6" stdDeviation="8" flood-color="#000" flood-opacity="0.35"/>
+    </filter>
+
+    <!-- Inner glow for badge -->
+    <filter id="innerGlow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="2" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="arithmetic" k2="1" k3="-1" />
+    </filter>
+  </defs>
+
+  <!-- Badge background -->
+  <circle cx="256" cy="256" r="236" fill="url(#bgGrad)" />
+  <circle cx="256" cy="256" r="230" fill="none" stroke="url(#ringGrad)" stroke-width="10" opacity="0.9"/>
+
+  <!-- Rook emblem -->
+  <g filter="url(#softShadow)">
+    <!-- Plinth/base shadow -->
+    <ellipse cx="256" cy="392" rx="120" ry="16" fill="#000" opacity="0.25"/>
+
+    <!-- Rook group -->
+    <g transform="translate(0,0)">
+      <!-- Base -->
+      <rect x="176" y="360" width="160" height="36" rx="10" fill="url(#rookGrad)" />
+
+      <!-- Body -->
+      <rect x="206" y="232" width="100" height="140" rx="14" fill="url(#rookGrad)" />
+
+      <!-- Top bar -->
+      <rect x="184" y="202" width="144" height="28" rx="8" fill="url(#rookGrad)" />
+
+      <!-- Crenellations -->
+      <rect x="188" y="172" width="36" height="30" rx="5" fill="url(#rookGrad)" />
+      <rect x="238" y="172" width="36" height="30" rx="5" fill="url(#rookGrad)" />
+      <rect x="288" y="172" width="36" height="30" rx="5" fill="url(#rookGrad)" />
+
+      <!-- Center slit -->
+      <rect x="252" y="262" width="8" height="70" rx="4" fill="#0a0f0a" opacity="0.9" />
+
+      <!-- Subtle bevel highlights -->
+      <rect x="206" y="232" width="100" height="8" rx="4" fill="#ffffff" opacity="0.25" />
+      <rect x="176" y="360" width="160" height="6" rx="3" fill="#ffffff" opacity="0.18" />
+    </g>
   </g>
 
-  <!-- Center slit detail: black for contrast -->
-  <rect x="248" y="250" width="16" height="80" rx="4" fill="#000000" opacity="0.85"/>
+  <!-- Coach star (suggesting guidance/coach) -->
+  <g transform="translate(0,-6)" filter="url(#innerGlow)">
+    <polygon points="256,128 268,148 292,152 274,168 278,192 256,181 234,192 238,168 220,152 244,148" fill="#9fe6a0" opacity="0.95"/>
+  </g>
 </svg>
 
 
